@@ -1,0 +1,78 @@
+[build]
+  publish = "."
+  command = ""
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# ============================================================
+# HEADERS CRÍTICOS PARA FFmpeg.wasm + ECOSISTEMA APU
+# ============================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # CRÍTICO: SharedArrayBuffer + FFmpeg.wasm
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+
+    # Seguridad general
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"
+
+    # Privacidad (ecosistema APU)
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()"
+    Cross-Origin-Resource-Policy = "same-origin"
+
+    # CSP optimizado para Web Workers + WASM local
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; connect-src 'self' blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'self'"
+
+# ============================================================
+# CACHÉ AGRESIVO PARA ASSETS PESADOS (FFmpeg.wasm ~31MB)
+# ============================================================
+[[headers]]
+  for = "/assets/vendor/ffmpeg/**/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/vendor/ffmpeg/core/*.wasm"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/wasm"
+
+# ============================================================
+# CACHÉ PARA MÓDULOS JS Y CSS
+# ============================================================
+[[headers]]
+  for = "/src/**/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/src/**/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# ============================================================
+# HTML SIEMPRE FRESCO
+# ============================================================
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ============================================================
+# 404 PERSONALIZADO Y RUTAS NO EXISTENTES
+# ============================================================
+[[redirects]]
+  from = "/404"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+  force = false

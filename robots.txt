@@ -1,0 +1,16 @@
+# robots.txt — Ecosistema APU
+# Privacy-First: Ningún dato del usuario es indexado
+
+User-agent: *
+Disallow: /assets/user-data/
+Disallow: /.netlify/
+Disallow: /tests/
+Disallow: /docs/
+
+Allow: /
+
+# Proteger archivos de configuración
+Disallow: /netlify.toml
+Disallow: /.env*
+
+Sitemap: https://apu-01.netlify.app/sitemap.xml

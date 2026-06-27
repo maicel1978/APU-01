@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Prepara audios MP3, OGG o WAV para transcripción de forma local y privada."
+    />
+    <title>APU-01 — Preparación Acústica</title>
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="stylesheet" href="./src/styles/main.css" />
+    <link rel="stylesheet" href="./src/styles/components.css" />
+    <link rel="stylesheet" href="./src/styles/modes.css" />
+    <script type="module" src="./src/ui/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#app-main">Saltar al contenido principal</a>
+
+    <main id="app-main" class="app-shell" aria-labelledby="app-title">
+
+      <!-- Encabezado principal -->
+      <section class="hero-card">
+        <div class="hero-content">
+          <div class="eyebrow">APU-01 · Preparación acústica</div>
+          <h1 id="app-title">Preparar audio para transcripción</h1>
+          
+          <p class="subtitle">
+            Convierte tus grabaciones de entrevistas, grupos focales o notas de voz 
+            a un formato óptimo para transcripción automática.
+          </p>
+
+          <div class="privacy-banner">
+            <span class="privacy-icon">🔒</span>
+            <span><strong>Privacidad total:</strong> El audio se procesa 100% en tu computadora. Nada se sube a internet.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Paso 1: Elegir tipo de preparación -->
+      <section class="panel" aria-labelledby="mode-title">
+        <div class="section-header">
+          <div class="step-number">1</div>
+          <div>
+            <h2 id="mode-title">Elige el tipo de preparación</h2>
+            <p class="section-subtitle">Selecciona según el uso que le darás al audio</p>
+          </div>
+        </div>
+
+        <div class="mode-options">
+          <label class="mode-card is-recommended">
+            <input data-mode-option type="radio" name="output-mode" value="transcription-prep" checked />
+            <div class="mode-content">
+              <div class="mode-header">
+                <span class="mode-icon">🎯</span>
+                <div>
+                  <strong>Preparación para transcripción</strong>
+                  <span class="badge recommended">Recomendado</span>
+                </div>
+              </div>
+              <p class="mode-description">
+                Ideal para entrevistas, grupos focales y sistemas de transcripción (Whisper, etc.).
+                <br>
+                <strong>Resultado:</strong> WAV mono • 16 kHz • 16 bits + manifest JSON
+              </p>
+            </div>
+          </label>
+
+          <label class="mode-card">
+            <input data-mode-option type="radio" name="output-mode" value="standard-wav" />
+            <div class="mode-content">
+              <div class="mode-header">
+                <span class="mode-icon">📄</span>
+                <div>
+                  <strong>Conversión estándar a WAV</strong>
+                </div>
+              </div>
+              <p class="mode-description">
+                Conversión simple para compatibilidad general con otros programas.
+                <br>
+                <strong>Resultado:</strong> WAV PCM estándar
+              </p>
+            </div>
+          </label>
+        </div>
+
+        <p class="mode-summary" data-mode-summary>Modo seleccionado: WAV para transcripción.</p>
+        <p class="section-subtitle" data-mode-help>
+          Conserva siempre el audio original. El archivo preparado es una copia para facilitar la transcripción.
+        </p>
+      </section>
+
+      <!-- Paso 2: Seleccionar archivo -->
+      <section class="panel" aria-labelledby="upload-title">
+        <div class="section-header">
+          <div class="step-number">2</div>
+          <div>
+            <h2 id="upload-title">Selecciona tu archivo de audio</h2>
+            <p class="section-subtitle">Arrastra el archivo o haz clic para seleccionarlo</p>
+          </div>
+        </div>
+
+        <div class="upload-area">
+          <label id="drop-label" class="dropzone" for="audio-file">
+            <div class="dropzone-inner">
+              <span class="dropzone-icon">📁</span>
+              <span class="dropzone-title">Arrastra tu audio aquí</span>
+              <span class="dropzone-text">o haz clic para seleccionar</span>
+              <span class="dropzone-formats">MP3 • OGG • WAV</span>
+            </div>
+          </label>
+
+          <input
+            id="audio-file"
+            class="visually-hidden"
+            type="file"
+            name="audio-file"
+            accept=".mp3,.ogg,.wav,audio/mpeg,audio/ogg,audio/wav,audio/wave"
+          />
+        </div>
+
+        <div class="file-info" data-file-card>
+          <div class="file-details">
+            <div class="file-row">
+              <span class="file-label">Archivo</span>
+              <span class="file-name" data-file-name>Sin archivo seleccionado</span>
+            </div>
+            <div class="file-row">
+              <span class="file-label">Tamaño</span>
+              <span class="file-meta" data-file-meta>—</span>
+            </div>
+          </div>
+          <span class="status-badge" data-status-badge>En espera</span>
+        </div>
+      </section>
+
+      <!-- Paso 3: Procesar -->
+      <section class="panel" aria-labelledby="process-title">
+        <div class="section-header">
+          <div class="step-number">3</div>
+          <div>
+            <h2 id="process-title">Procesar el audio</h2>
+            <p class="section-subtitle">Revisa y comienza la preparación</p>
+          </div>
+        </div>
+
+        <div class="process-info">
+          <p id="status-summary" class="section-subtitle">Todavía no seleccionaste ningún archivo.</p>
+          <div class="worker-status">
+            <span class="worker-dot" data-worker-dot></span>
+            <span data-worker-text>Worker en espera</span>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span data-progress-text>Progreso</span>
+              <span data-progress-percent>0%</span>
+            </div>
+            <progress data-progress-bar value="0" max="100"></progress>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="button primary" data-convert disabled>
+            Preparar para transcripción
+          </button>
+          <button type="button" class="button secondary" data-cancel disabled>
+            Cancelar
+          </button>
+          <button type="button" class="button ghost" data-reset disabled>
+            Cambiar archivo
+          </button>
+        </div>
+      </section>
+
+      <!-- Paso 4: Resultados -->
+      <section class="panel result-panel" aria-labelledby="result-title">
+        <div class="section-header">
+          <div class="step-number">4</div>
+          <div>
+            <h2 id="result-title">Descargar resultados</h2>
+            <p class="section-subtitle">Tus archivos están listos</p>
+          </div>
+        </div>
+
+        <div class="result-content">
+          <div class="result-text" data-result-text>
+            El archivo WAV aparecerá aquí cuando termine el procesamiento.
+          </div>
+
+          <div class="result-actions">
+            <a class="button download is-hidden" data-download href="#" download>
+              ⬇️ Descargar WAV preparado
+            </a>
+            <a class="button ghost is-hidden" data-manifest-download href="#" download>
+              📄 Descargar manifest JSON
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mensajes -->
+      <section class="message-area">
+        <p class="message" data-message role="status" aria-live="polite">
+          Selecciona un archivo MP3, OGG o WAV para comenzar.
+        </p>
+        <p class="message error is-hidden" data-error role="alert" aria-live="assertive"></p>
+      </section>
+
+      <!-- Footer del ecosistema -->
+      <footer class="ecosystem-footer">
+        <p>
+          <strong>APU-01</strong> — Parte del ecosistema 
+          <a href="https://github.com/maicel1978/APU" target="_blank" rel="noopener noreferrer">APU</a> 
+          · Privacidad por defecto · Procesamiento local
+        </p>
+      </footer>
+
+    </main>
+  </body>
+</html>

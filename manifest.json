@@ -1,0 +1,37 @@
+{
+  "name": "APU-01 — Preparación Acústica",
+  "short_name": "APU-01",
+  "description": "Preparación acústica local y privada para transcripción. Procesamiento 100% en el navegador. Ecosistema APU.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f766e",
+  "lang": "es",
+  "scope": "/",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "medical"],
+  "shortcuts": [
+    {
+      "name": "Preparar audio para transcripción",
+      "short_name": "Transcripción",
+      "url": "/?mode=transcription-prep",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

@@ -1,0 +1,27 @@
+{
+  "name": "audio-wav-clinico",
+  "version": "0.6.0",
+  "description": "APU-01: preparación acústica local MP3/OGG/WAV a WAV estándar o WAV optimizado para transcripción, con Vanilla JS, Web Worker y FFmpeg.wasm local.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "npm run test:core && npm run test:dom && npm run test:audit",
+    "test:core": "node tests/core-smoke.mjs",
+    "test:dom": "node tests/dom-contract.mjs",
+    "test:audit": "node tests/static-audit.mjs"
+  },
+  "keywords": [
+    "audio",
+    "wav",
+    "transcription",
+    "ffmpeg.wasm",
+    "web-worker",
+    "vanilla-js",
+    "clinical-research",
+    "qualitative-research"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
