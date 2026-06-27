@@ -162,3 +162,50 @@
     justify-content: center;
   }
 }
+/* Barras de progreso y previsualización local */
+progress[data-progress-bar] {
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  appearance: none;
+}
+
+progress[data-progress-bar]::-webkit-progress-bar {
+  background: var(--surface-soft);
+  border-radius: 999px;
+}
+
+progress[data-progress-bar]::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  border-radius: 999px;
+  transition: width 180ms ease;
+}
+
+progress[data-progress-bar]::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  border-radius: 999px;
+}
+
+.audio-preview,
+.output-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.audio-preview audio,
+.output-preview audio {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.preview-note {
+  margin: 0.65rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}

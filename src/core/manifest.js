@@ -6,7 +6,7 @@
 
 import { OUTPUT_MODES, normalizeOutputMode } from './processing-profiles.js';
 
-export function createPreparedManifest({ fileDescriptor, outputFileName, outputSizeBytes = null }) {
+export function createPreparedManifest({ fileDescriptor, outputFileName, outputSizeBytes = null, wavInfo = null }) {
   if (!fileDescriptor) throw new TypeError('fileDescriptor es obligatorio para crear manifest.');
 
   return {
@@ -24,9 +24,9 @@ export function createPreparedManifest({ fileDescriptor, outputFileName, outputS
       fileName: outputFileName,
       format: 'wav',
       codec: 'pcm_s16le',
-      channels: 1,
-      sampleRate: 16000,
-      bitDepth: 16,
+      channels: wavInfo?.channels || 1,
+      sampleRate: wavInfo?.sampleRate || 16000,
+      bitDepth: wavInfo?.bitsPerSample || 16,
       sizeBytes: outputSizeBytes,
     },
     processing: {
@@ -35,6 +35,14 @@ export function createPreparedManifest({ fileDescriptor, outputFileName, outputS
       dynamicNormalization: true,
       lightCompression: true,
       silenceHandling: 'preserve-significant-pauses',
+      verifiedOutput: Boolean(wavInfo),
+      engine: 'ffmpeg.wasm',
+      profileId: 'apu-02-wav-mono-16khz-pcm16',
+    },
+    compatibility: {
+      targetUnit: 'APU-02',
+      expectedInput: true,
+      profile: 'wav-mono-16khz-pcm16',
     },
     privacy: {
       processedLocally: true,

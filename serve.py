@@ -43,11 +43,11 @@ class APURequestHandler(SimpleHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
 
-        # Caché para assets estáticos
-        if self.path.endswith(('.wasm', '.js', '.css')):
+        # Desarrollo local: evitar caché en UI para ver cambios al refrescar.
+        if self.path.endswith('.wasm'):
             self.send_header("Cache-Control", "public, max-age=31536000, immutable")
-        elif self.path.endswith(('.html', '.json')):
-            self.send_header("Cache-Control", "no-cache, must-revalidate")
+        elif self.path.endswith(('.html', '.json', '.js', '.css')):
+            self.send_header("Cache-Control", "no-store, must-revalidate")
 
         super().end_headers()
 

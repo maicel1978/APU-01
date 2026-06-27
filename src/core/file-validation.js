@@ -8,16 +8,25 @@ import { createUserError } from '../utils/errors.js';
 import { sanitizeFileStem } from '../utils/format.js';
 import { estimateProcessingMemory } from './memory.js';
 
-const SUPPORTED_EXTENSIONS = new Set(['mp3', 'ogg', 'wav']);
+const SUPPORTED_EXTENSIONS = new Set(['mp3', 'ogg', 'oga', 'opus', 'wav', 'm4a', 'aac', 'mp4', 'webm', 'flac']);
 const SUPPORTED_MIME_HINTS = new Set([
   'audio/mpeg',
   'audio/mp3',
   'audio/ogg',
   'application/ogg',
+  'audio/opus',
   'audio/wav',
   'audio/wave',
   'audio/x-wav',
   'audio/vnd.wave',
+  'audio/mp4',
+  'audio/x-m4a',
+  'audio/aac',
+  'audio/aacp',
+  'audio/webm',
+  'audio/flac',
+  'video/mp4',
+  'video/webm',
 ]);
 
 export function validateAudioFile(file) {
@@ -25,6 +34,7 @@ export function validateAudioFile(file) {
 
   const name = String(file.name || '').trim();
   const extension = getExtension(name);
+  const warnings = [];
 
   if (file.size <= 0) throw createUserError('ERR_EMPTY_FILE', 'El archivo está vacío.');
 
@@ -36,19 +46,20 @@ export function validateAudioFile(file) {
 
   if (!SUPPORTED_EXTENSIONS.has(extension)) {
     throw createUserError('ERR_UNSUPPORTED_FORMAT', 'Este formato no está soportado.', {
-      suggestion: 'Usa MP3, OGG o WAV.',
+      suggestion: 'Usa MP3, WAV, OGG/OPUS, M4A/AAC, MP4, WEBM o FLAC.',
     });
   }
 
   if (file.type && !SUPPORTED_MIME_HINTS.has(file.type.toLowerCase())) {
-    throw createUserError('ERR_UNSUPPORTED_FORMAT', 'Este archivo no parece ser un audio MP3, OGG o WAV válido.', {
-      suggestion: 'Prueba con otro archivo de audio.',
-    });
+    warnings.push('El tipo informado por el navegador no coincide con la extensión; se intentará convertir de todos modos.');
   }
+
+  if (!file.type) warnings.push('El navegador no informó el tipo de archivo; se validó por extensión.');
 
   const memory = estimateProcessingMemory(file);
   if (!memory.safe) {
     throw createUserError('ERR_FILE_TOO_LARGE', 'Este archivo es demasiado grande para procesarlo de forma segura en este navegador.', {
+      suggestion: 'Divide la grabación en segmentos más pequeños o usa un equipo con más memoria.',
       recoverable: true,
       details: memory,
     });
@@ -61,6 +72,7 @@ export function validateAudioFile(file) {
     extension,
     mimeType: file.type || '',
     sizeBytes: file.size,
+    warnings,
     outputFileName: `${sanitizeFileStem(name)}.wav`,
     status: 'ready',
   };

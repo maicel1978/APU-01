@@ -133,8 +133,9 @@ function handleWorkerMessage(message, fileDescriptor, outputMode, callbacks, res
       outputFileName,
       outputMimeType: 'audio/wav',
       outputSizeBytes: blob.size,
+      wavInfo: message.payload.wavInfo || null,
       manifest: shouldCreateManifest(resultMode)
-        ? createPreparedManifest({ fileDescriptor, outputFileName, outputSizeBytes: blob.size })
+        ? createPreparedManifest({ fileDescriptor, outputFileName, outputSizeBytes: blob.size, wavInfo: message.payload.wavInfo })
         : null,
     });
   }

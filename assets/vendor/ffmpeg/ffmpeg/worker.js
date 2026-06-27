@@ -14,13 +14,13 @@ const load = async ({ coreURL: _coreURL, wasmURL: _wasmURL, workerURL: _workerUR
     const first = !ffmpeg;
     try {
         if (!_coreURL)
-            _coreURL = CORE_URL;
+            throw new Error("APU-01 requiere FFmpeg core local. coreURL no fue provisto.");
         // when web worker type is `classic`.
         importScripts(_coreURL);
     }
     catch {
-        if (!_coreURL || _coreURL === CORE_URL)
-            _coreURL = CORE_URL.replace('/umd/', '/esm/');
+        if (!_coreURL)
+            throw new Error("APU-01 requiere FFmpeg core local. coreURL no fue provisto.");
         // when web worker type is `module`.
         self.createFFmpegCore = (await import(
         /* @vite-ignore */ _coreURL)).default;

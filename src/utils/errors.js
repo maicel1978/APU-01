@@ -30,7 +30,7 @@ export function normalizeError(error) {
     'ERR_UNKNOWN',
     'No pudimos completar la operación.',
     {
-      suggestion: 'Intenta con otro archivo MP3 u OGG.',
+      suggestion: 'Intenta con otro archivo MP3, WAV, M4A, OGG/OPUS, WEBM o FLAC.',
       recoverable: true,
       details: error instanceof Error ? error.message : error,
     },
@@ -48,6 +48,19 @@ export function mapWorkerError(message, details) {
     );
   }
 
+
+  if (normalized.includes('ffmpeg terminó') || normalized.includes('invalid data') || normalized.includes('wav no cumple')) {
+    return createUserError(
+      'ERR_CONVERSION_FAILED',
+      'No pudimos leer o convertir este audio con el conversor local.',
+      {
+        suggestion: 'Prueba con MP3, WAV, M4A, OGG/OPUS, WEBM o FLAC. El archivo puede estar dañado o usar un códec no incluido.',
+        recoverable: true,
+        details,
+      },
+    );
+  }
+
   if (normalized.includes('cancel')) {
     return createUserError('ERR_CANCELLED', 'Conversión cancelada.', {
       recoverable: true,
@@ -59,7 +72,7 @@ export function mapWorkerError(message, details) {
     'ERR_CONVERSION_FAILED',
     'No pudimos convertir este audio.',
     {
-      suggestion: 'Prueba con otro archivo MP3 u OGG.',
+      suggestion: 'Prueba con otro archivo compatible. Si viene de WhatsApp, expórtalo como audio reproducible, no como archivo cifrado.',
       recoverable: true,
       details,
     },

@@ -10,10 +10,11 @@
     <title>APU-01 — Preparación Acústica</title>
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0f766e" />
-    <link rel="stylesheet" href="./src/styles/main.css" />
-    <link rel="stylesheet" href="./src/styles/components.css" />
-    <link rel="stylesheet" href="./src/styles/modes.css" />
-    <script type="module" src="./src/ui/app.js"></script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Cpath d='M18 34h7l4-14 7 28 4-14h6' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./src/styles/main.css?v=0.7.0" />
+    <link rel="stylesheet" href="./src/styles/components.css?v=0.7.0" />
+    <link rel="stylesheet" href="./src/styles/modes.css?v=0.7.0" />
+    <script type="module" src="./src/ui/app.js?v=0.7.0"></script>
   </head>
   <body>
     <a class="skip-link" href="#app-main">Saltar al contenido principal</a>
@@ -43,8 +44,8 @@
         <div class="section-header">
           <div class="step-number">1</div>
           <div>
-            <h2 id="mode-title">Elige el tipo de preparación</h2>
-            <p class="section-subtitle">Selecciona según el uso que le darás al audio</p>
+            <h2 id="mode-title">Elige la preparación</h2>
+            <p class="section-subtitle">Para la mayoría de casos, usa la opción recomendada</p>
           </div>
         </div>
 
@@ -55,14 +56,14 @@
               <div class="mode-header">
                 <span class="mode-icon">🎯</span>
                 <div>
-                  <strong>Preparación para transcripción</strong>
+                  <strong>Preparación recomendada</strong>
                   <span class="badge recommended">Recomendado</span>
                 </div>
               </div>
               <p class="mode-description">
-                Ideal para entrevistas, grupos focales y sistemas de transcripción (Whisper, etc.).
+                Para entrevistas, grupos focales, notas de voz y transcripción en el ecosistema APU.
                 <br>
-                <strong>Resultado:</strong> WAV mono • 16 kHz • 16 bits + manifest JSON
+                <strong>Resultado:</strong> audio WAV preparado + manifest
               </p>
             </div>
           </label>
@@ -73,21 +74,21 @@
               <div class="mode-header">
                 <span class="mode-icon">📄</span>
                 <div>
-                  <strong>Conversión estándar a WAV</strong>
+                  <strong>Conversión simple a WAV</strong>
                 </div>
               </div>
               <p class="mode-description">
-                Conversión simple para compatibilidad general con otros programas.
+                Opción avanzada para obtener un WAV sin preparación específica para transcripción.
                 <br>
-                <strong>Resultado:</strong> WAV PCM estándar
+                <strong>Resultado:</strong> WAV estándar
               </p>
             </div>
           </label>
         </div>
 
-        <p class="mode-summary" data-mode-summary>Modo seleccionado: WAV para transcripción.</p>
+        <p class="mode-summary" data-mode-summary>Modo seleccionado: preparación recomendada.</p>
         <p class="section-subtitle" data-mode-help>
-          Conserva siempre el audio original. El archivo preparado es una copia para facilitar la transcripción.
+          Conserva siempre el audio original. La app generará una copia preparada.
         </p>
       </section>
 
@@ -96,8 +97,8 @@
         <div class="section-header">
           <div class="step-number">2</div>
           <div>
-            <h2 id="upload-title">Selecciona tu archivo de audio</h2>
-            <p class="section-subtitle">Arrastra el archivo o haz clic para seleccionarlo</p>
+            <h2 id="upload-title">Selecciona el audio</h2>
+            <p class="section-subtitle">Puedes usar audios comunes de celular, WhatsApp o computadora</p>
           </div>
         </div>
 
@@ -105,9 +106,9 @@
           <label id="drop-label" class="dropzone" for="audio-file">
             <div class="dropzone-inner">
               <span class="dropzone-icon">📁</span>
-              <span class="dropzone-title">Arrastra tu audio aquí</span>
+              <span class="dropzone-title">Arrastra el audio aquí</span>
               <span class="dropzone-text">o haz clic para seleccionar</span>
-              <span class="dropzone-formats">MP3 • OGG • WAV</span>
+              <span class="dropzone-formats">MP3 • WAV • M4A • OGG/OPUS • WEBM • FLAC</span>
             </div>
           </label>
 
@@ -116,7 +117,7 @@
             class="visually-hidden"
             type="file"
             name="audio-file"
-            accept=".mp3,.ogg,.wav,audio/mpeg,audio/ogg,audio/wav,audio/wave"
+            accept=".mp3,.wav,.ogg,.oga,.opus,.m4a,.aac,.mp4,.webm,.flac,audio/mpeg,audio/wav,audio/wave,audio/ogg,audio/opus,audio/mp4,audio/aac,audio/webm,audio/flac,video/mp4,video/webm"
           />
         </div>
 
@@ -133,6 +134,12 @@
           </div>
           <span class="status-badge" data-status-badge>En espera</span>
         </div>
+
+        <div class="audio-preview is-hidden" data-audio-preview-wrap>
+          <p class="section-subtitle">Escucha rápida del audio seleccionado:</p>
+          <audio controls preload="metadata" data-audio-preview></audio>
+          <p class="preview-note" data-preview-note>Vista previa local. Si no se reproduce, la conversión puede funcionar igualmente.</p>
+        </div>
       </section>
 
       <!-- Paso 3: Procesar -->
@@ -140,8 +147,8 @@
         <div class="section-header">
           <div class="step-number">3</div>
           <div>
-            <h2 id="process-title">Procesar el audio</h2>
-            <p class="section-subtitle">Revisa y comienza la preparación</p>
+            <h2 id="process-title">Preparar el audio</h2>
+            <p class="section-subtitle">Un archivo a la vez, siempre en tu equipo</p>
           </div>
         </div>
 
@@ -163,7 +170,7 @@
 
         <div class="actions">
           <button type="button" class="button primary" data-convert disabled>
-            Preparar para transcripción
+            Preparar audio
           </button>
           <button type="button" class="button secondary" data-cancel disabled>
             Cancelar
@@ -179,19 +186,24 @@
         <div class="section-header">
           <div class="step-number">4</div>
           <div>
-            <h2 id="result-title">Descargar resultados</h2>
-            <p class="section-subtitle">Tus archivos están listos</p>
+            <h2 id="result-title">Resultado</h2>
+            <p class="section-subtitle">Descarga el audio preparado y su manifest</p>
           </div>
         </div>
 
         <div class="result-content">
           <div class="result-text" data-result-text>
-            El archivo WAV aparecerá aquí cuando termine el procesamiento.
+            El audio preparado aparecerá aquí cuando termine el procesamiento.
+          </div>
+
+          <div class="output-preview is-hidden" data-output-preview-wrap>
+            <p class="section-subtitle">Escucha rápida del audio preparado:</p>
+            <audio controls preload="metadata" data-output-preview></audio>
           </div>
 
           <div class="result-actions">
             <a class="button download is-hidden" data-download href="#" download>
-              ⬇️ Descargar WAV preparado
+              ⬇️ Descargar audio preparado
             </a>
             <a class="button ghost is-hidden" data-manifest-download href="#" download>
               📄 Descargar manifest JSON
