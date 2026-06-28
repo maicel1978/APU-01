@@ -7,6 +7,7 @@
 import { createUserError, mapWorkerError, normalizeError } from '../utils/errors.js';
 import { createPreparedManifest, shouldCreateManifest } from './manifest.js';
 import { OUTPUT_MODES, normalizeOutputMode } from './processing-profiles.js';
+import { canUseBrowserAudioFallback, convertWithBrowserAudioFallback } from './browser-audio-fallback.js';
 
 const PROTOCOL_VERSION = '1.2.0';
 const DEFAULT_REPORT_EVERY = 1000;
@@ -50,6 +51,14 @@ export function createConversionController({ workerUrl, reportEvery = DEFAULT_RE
       const inputBuffer = await fileDescriptor.file.arrayBuffer();
       return await postConversion(fileDescriptor, inputBuffer, outputMode, outputFileName, callbacks);
     } catch (error) {
+      if (canUseBrowserAudioFallback(fileDescriptor)) {
+        try {
+          callbacks.onStateChange?.({ state: 'fallback-converting', message: 'Usando decodificación local del navegador…' });
+          return await runBrowserFallback(fileDescriptor, outputMode, outputFileName);
+        } catch {
+          /* Si el fallback también falla, se conserva el error original de FFmpeg. */
+        }
+      }
       const normalized = normalizeError(error);
       callbacks.onError?.(normalized);
       throw normalized;
@@ -105,6 +114,29 @@ export function createConversionController({ workerUrl, reportEvery = DEFAULT_RE
   }
 
   return { convert, cancel, dispose };
+}
+
+
+async function runBrowserFallback(fileDescriptor, outputMode, outputFileName) {
+  const fallback = await convertWithBrowserAudioFallback({ fileDescriptor, outputMode, outputFileName });
+  const resultMode = normalizeOutputMode(outputMode);
+  return {
+    id: fileDescriptor.id,
+    outputMode: resultMode,
+    outputBlob: fallback.outputBlob,
+    outputFileName,
+    outputMimeType: 'audio/wav',
+    outputSizeBytes: fallback.outputBlob.size,
+    wavInfo: fallback.wavInfo,
+    manifest: shouldCreateManifest(resultMode)
+      ? createPreparedManifest({
+        fileDescriptor,
+        outputFileName,
+        outputSizeBytes: fallback.outputBlob.size,
+        wavInfo: fallback.wavInfo,
+      })
+      : null,
+  };
 }
 
 function normalizeConvertArgs(conversionOptionsOrCallbacks, maybeCallbacks) {

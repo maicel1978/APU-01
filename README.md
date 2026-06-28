@@ -32,6 +32,7 @@ MP3, WAV, M4A/AAC, MP4, OGG/OPUS, WEBM, FLAC
 - Sin telemetría.
 - Sin frameworks runtime.
 - Web Worker para evitar bloquear la interfaz.
+- Fallback local con Web Audio API para formatos que el build local de FFmpeg.wasm no decodifique en algunos navegadores.
 - Progreso visible y cancelación.
 - Validación defensiva de formato, tamaño y memoria.
 - Descarga de WAV preparado.
@@ -69,19 +70,18 @@ Mono
 16-bit
 ```
 
-Pipeline conservador:
+Pipeline conservador y estable:
 
 ```text
 -i input
 -vn
 -ac 1
 -ar 16000
--af highpass=f=80,dynaudnorm,acompressor
 -acodec pcm_s16le
 output_prepared.wav
 ```
 
-No promete eliminar completamente ruido, eco ni separar hablantes. La app prepara el audio de forma conservadora para mejorar consistencia y compatibilidad.
+No promete eliminar ruido, eco ni separar hablantes. La app prioriza una preparación estable y compatible: WAV mono, 16 kHz y PCM 16-bit para el flujo APU.
 
 ## Manifest JSON
 

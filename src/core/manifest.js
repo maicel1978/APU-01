@@ -31,9 +31,9 @@ export function createPreparedManifest({ fileDescriptor, outputFileName, outputS
     },
     processing: {
       mode: OUTPUT_MODES.transcriptionPrep,
-      highPassFilter: true,
-      dynamicNormalization: true,
-      lightCompression: true,
+      highPassFilter: false,
+      dynamicNormalization: false,
+      lightCompression: false,
       silenceHandling: 'preserve-significant-pauses',
       verifiedOutput: Boolean(wavInfo),
       engine: 'ffmpeg.wasm',

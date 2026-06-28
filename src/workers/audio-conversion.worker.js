@@ -126,7 +126,6 @@ function buildArgs(inputName, outputName, outputMode) {
       '-vn',
       '-ac', '1',
       '-ar', '16000',
-      '-af', 'highpass=f=80,dynaudnorm,acompressor',
       '-acodec', 'pcm_s16le',
       outputName,
     ];
