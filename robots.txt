@@ -12,5 +12,3 @@ Allow: /
 # Proteger archivos de configuración
 Disallow: /netlify.toml
 Disallow: /.env*
-
-Sitemap: https://apu-01.netlify.app/sitemap.xml

@@ -9,6 +9,7 @@ import { FFmpeg } from '../../assets/vendor/ffmpeg/ffmpeg/index.js';
 const PROTOCOL_VERSION = '1.2.0';
 const ENGINE_NAME = 'ffmpeg.wasm';
 const OUTPUT_MODES = Object.freeze({ standard: 'standard-wav', transcription: 'transcription-prep' });
+const SUPPORTED_INPUT_EXTENSIONS = new Set(['mp3', 'ogg', 'oga', 'opus', 'wav', 'm4a', 'aac', 'mp4', 'webm', 'flac']);
 
 let ffmpeg = null;
 let engineReady = false;
@@ -70,7 +71,8 @@ async function convertAudio(message) {
     throwIfCancelled();
 
     post(message.id, 'STATE', { state: 'converting', message: getConvertingMessage(safeOutputMode) });
-    await ffmpeg.exec(buildArgs(inputName, outputName, safeOutputMode));
+    const exitCode = await ffmpeg.exec(buildArgs(inputName, outputName, safeOutputMode));
+    if (exitCode !== 0) throw new Error(`FFmpeg terminó con código ${exitCode}.`);
     throwIfCancelled();
 
     post(message.id, 'STATE', { state: 'writing-output', message: 'Preparando descarga…' });
@@ -171,7 +173,7 @@ async function cleanupFiles(inputName, outputName) {
 
 function validatePayload(inputBuffer, inputExtension, outputFileName, outputMode) {
   if (!(inputBuffer instanceof ArrayBuffer) || inputBuffer.byteLength === 0) throw new Error('Archivo de entrada inválido.');
-  if (!['mp3', 'ogg', 'wav'].includes(inputExtension)) throw new Error('Formato no soportado.');
+  if (!SUPPORTED_INPUT_EXTENSIONS.has(inputExtension)) throw new Error('Formato no soportado.');
   if (!String(outputFileName || '').toLowerCase().endsWith('.wav')) throw new Error('Nombre de salida inválido.');
   if (!Object.values(OUTPUT_MODES).includes(outputMode)) throw new Error('Modo de salida inválido.');
 }

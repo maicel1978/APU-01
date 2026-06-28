@@ -5,7 +5,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "python3 -m http.server 8080",
+    "start": "node serve.mjs 8080",
+    "start:node": "node serve.mjs 8080",
+    "start:python": "python serve.py 8080",
+    "start:plain": "python -m http.server 8080",
     "test": "npm run test:core && npm run test:dom && npm run test:audit",
     "test:core": "node tests/core-smoke.mjs",
     "test:dom": "node tests/dom-contract.mjs",

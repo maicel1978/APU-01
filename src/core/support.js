@@ -19,10 +19,23 @@ export function checkBrowserSupport() {
 
   const missing = checks.filter(([, supported]) => !supported).map(([name]) => name);
 
+  const diagnostics = {
+    isSecureContext: Boolean(globalThis.isSecureContext),
+    crossOriginIsolated: Boolean(globalThis.crossOriginIsolated),
+    sharedArrayBuffer: typeof globalThis.SharedArrayBuffer !== 'undefined',
+  };
+  const warnings = [];
+
+  if (!diagnostics.crossOriginIsolated) {
+    warnings.push('El contexto no está aislado; verifica COOP/COEP en despliegue para máxima compatibilidad.');
+  }
+
   if (missing.length > 0) {
     return {
       supported: false,
       missing,
+      warnings,
+      diagnostics,
       message: 'Este navegador no tiene las capacidades necesarias para convertir audio de forma segura.',
     };
   }
@@ -30,6 +43,8 @@ export function checkBrowserSupport() {
   return {
     supported: true,
     missing: [],
+    warnings,
+    diagnostics,
     message: 'Navegador compatible para conversión local.',
   };
 }

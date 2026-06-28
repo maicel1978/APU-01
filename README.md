@@ -22,7 +22,7 @@ La app ofrece dos modos:
 Formatos de entrada:
 
 ```text
-MP3, OGG, WAV
+MP3, WAV, M4A/AAC, MP4, OGG/OPUS, WEBM, FLAC
 ```
 
 ## Características
@@ -43,7 +43,7 @@ MP3, OGG, WAV
 1. Elige modo:
    - **WAV para transcripción**.
    - **WAV estándar**.
-2. Arrastra o selecciona un archivo MP3, OGG o WAV.
+2. Arrastra o selecciona un archivo de audio compatible.
 3. Pulsa el botón principal.
 4. Espera el progreso o cancela si lo necesitas.
 5. Descarga el WAV.
@@ -124,7 +124,7 @@ No se recomienda abrir `index.html` con `file://`, porque Web Workers, ES Module
 Desde la raíz del repositorio:
 
 ```bash
-python3 -m http.server 8080
+npm start
 ```
 
 Abrir:
@@ -138,6 +138,8 @@ También puedes usar:
 ```bash
 npm start
 ```
+
+El comando `npm start` usa `serve.mjs` con Node.js, por lo que funciona igual en Windows, macOS y Linux. Este servidor activa los headers `COOP` + `COEP` requeridos por el ecosistema APU. Si prefieres Python, puedes usar `npm run start:python` o `python serve.py 8080`. El servidor simple `python -m http.server 8080` queda reservado solo para revisiones estáticas rápidas porque no añade esos headers.
 
 ## Tests y auditoría
 
@@ -156,7 +158,7 @@ node tests/static-audit.mjs
 
 Los tests verifican:
 
-- Validación de MP3, OGG, WAV, PM3, archivos vacíos y formatos inválidos.
+- Validación de MP3, WAV, M4A/AAC, MP4, OGG/OPUS, WEBM, FLAC, PM3, archivos vacíos y formatos inválidos.
 - Estimación defensiva de memoria.
 - Perfiles `standard-wav` y `transcription-prep`.
 - Manifest JSON.
@@ -233,6 +235,25 @@ Para verificarlo, abre DevTools → Network durante una conversión. Deben carga
 - FFmpeg.wasm local añade aproximadamente 31 MB al repositorio.
 - La conversión real debe probarse en navegadores objetivo con audios reales.
 - La preparación acústica no sustituye revisión humana ni mejora audios extremadamente degradados.
+
+
+## Subida fácil a GitHub en Windows
+
+Si descargaste el paquete corregido sin carpeta `.git`, puedes usar el asistente incluido:
+
+Opción más simple: doble clic en:
+
+```text
+SUBIR_A_GITHUB.bat
+```
+
+O desde PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\SUBIR_A_GITHUB.ps1
+```
+
+El asistente clona el repositorio oficial en una carpeta vecina, copia encima los archivos corregidos, ejecuta `npm test`, crea el commit y hace `git push`.
 
 ## Despliegue en Netlify (recomendado)
 
