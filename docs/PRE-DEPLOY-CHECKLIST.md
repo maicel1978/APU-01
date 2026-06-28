@@ -71,6 +71,7 @@ Verificar que existan y estén correctos:
 - [ ] `manifest.json`
 - [ ] `robots.txt`
 - [ ] `LICENSE`
+- [ ] Licencia MIT presente y enlazada desde README
 - [ ] `INICIAME.bat`
 - [ ] `INICIAME.ps1`
 - [ ] `serve.py`
@@ -146,7 +147,7 @@ rm -f serve.json
 
 ---
 
-**Fecha de última revisión:** 2026-06-27  
-**Versión del checklist:** 1.0
+**Fecha de última revisión:** 2026-06-28  
+**Versión del checklist:** 1.1
 
 > **Recomendación:** Marca cada ítem conforme lo vayas verificando. Solo marca "Go" cuando todos los ítems críticos estén completos.

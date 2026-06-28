@@ -1,5 +1,7 @@
 # Audio WAV Clínico — APU-01
 
+**Versión estable:** 0.7.0 · **Licencia:** MIT · **Despliegue recomendado:** Netlify
+
 Herramienta local y privada de **preparación acústica** para médicos, investigadores y equipos académicos que trabajan con entrevistas, grupos focales o grabaciones clínicas/cualitativas.
 
 Esta app es la primera unidad del ecosistema APU:
@@ -9,6 +11,8 @@ APU-01 — Preparación Acústica
 ```
 
 Procesa audio en el navegador con **Vanilla JS**, **Web Worker** y **FFmpeg.wasm local**. Ningún archivo se sube a servidores.
+
+Estado profesional actual: listo para auditoría, descarga y despliegue estático. Incluye fallback local con Web Audio API para mejorar compatibilidad con audios de celular cuando el build local de FFmpeg.wasm no pueda decodificar un formato concreto.
 
 ## Qué hace
 
@@ -298,8 +302,8 @@ También funciona con GitHub Pages (ver `docs/GITHUB-PUBLISHING.md`).
 
 ## Licencia
 
-Este proyecto está bajo la **Licencia MIT**. Esto significa que puedes usar, copiar, modificar y distribuir el software libremente, siempre que se mantenga el aviso de copyright original.
+Este proyecto está publicado bajo la **Licencia MIT**. Puedes usar, copiar, modificar y distribuir el software, siempre que se mantenga el aviso de copyright y la licencia original.
 
-Consulta el archivo [LICENSE](LICENSE) para ver el texto legal completo.
+Consulta [LICENSE](LICENSE) para ver el texto legal completo. La privacidad local-first y la ausencia de telemetría forman parte del diseño técnico del proyecto.
 
 > ⚠️ **Nota sobre dependencias:** Este proyecto incluye y distribuye binarios locales de `FFmpeg.wasm` en la carpeta `assets/vendor/ffmpeg`. FFmpeg está licenciado bajo **LGPLv2.1+** (o GPL según los flags de compilación). El uso y distribución de este ecosistema respeta la naturaleza de código abierto de dichas herramientas.

@@ -1,39 +1,34 @@
-# QA REPORT — Audio WAV Clínico / APU-01.1
+# QA REPORT — APU-01 v0.7.0
 
-PRISMA+ v5.2 — Fase 5 APU-01.1
+PRISMA+ v5.2
 
 ## 1. Resumen
 
-Estado: APU-01.1 funcional y preparado para revisión manual final.
+Estado: versión estable, auditada y lista para despliegue profesional en Netlify.
 
 Implementado:
-- Entrada MP3/OGG/WAV.
+- Entrada de audios comunes: MP3, WAV, M4A/AAC, MP4, OGG/OPUS, WEBM y FLAC.
 - Modo `standard-wav`.
 - Modo `transcription-prep`.
 - Protocolo Worker `1.2.0`.
+- FFmpeg.wasm local en Web Worker.
+- Fallback local con Web Audio API para mejorar compatibilidad.
 - Manifest JSON para audio preparado.
-- Progreso y cancelación.
-- Procesamiento local sin red externa.
-
-Limitación:
-- No se pudo automatizar conversión real en navegador porque el entorno no incluye navegador headless disponible.
-- La conversión real debe probarse manualmente con audios reales.
+- Progreso, cancelación y descarga local.
+- Servidor local Node.js con COOP/COEP.
+- Configuración Netlify con headers, CSP, caché y 404.
+- Licencia MIT.
 
 ## 2. Comandos ejecutados
 
 ```bash
 npm test
-node --check src/workers/audio-conversion.worker.js
-node --check src/core/conversion-controller.js
-node --check src/ui/app.js
-python3 -m http.server 8765
 ```
 
-Resultado:
+Resultado final:
 - Core smoke tests: OK.
+- DOM contract: OK.
 - Static audit: OK.
-- Sintaxis JS: OK.
-- Assets principales: HTTP 200.
 
 ## 3. Cobertura automatizada
 
@@ -42,6 +37,9 @@ Resultado:
 | `.mp3` válido | OK |
 | `.ogg` válido | OK |
 | `.wav` válido | OK |
+| `.opus` válido | OK |
+| `.m4a` válido | OK |
+| `.webm` válido | OK |
 | `.pm3` | OK |
 | `.txt` | OK |
 | archivo vacío | OK |
@@ -52,84 +50,42 @@ Resultado:
 | R1 sin frameworks | OK |
 | R10 límite de líneas | OK |
 | R14 cabecera JS | OK |
+| GitHub Actions v5 | OK |
+| servidor Node local | OK |
 
-## 4. Assets verificados
+## 4. Pruebas manuales reportadas
 
-Por HTTP local:
+| Prueba | Estado |
+|---|---:|
+| Deploy Netlify | OK |
+| Conversión WAV | OK |
+| Conversión AAC con fallback local | OK |
+| GitHub Actions | OK |
+| App local con `npm start` | OK |
 
-```text
-index.html                                      200
-src/workers/audio-conversion.worker.js          200
-assets/vendor/ffmpeg/core/ffmpeg-core.wasm      200
-```
-
-## 5. Revisión APU-01.1
+## 5. Revisión APU
 
 | Criterio | Estado | Evidencia |
 |---|---:|---|
-| Selector de modo | Cumple | UI con dos opciones |
-| Modo recomendado claro | Cumple | `WAV para transcripción` preseleccionado |
-| Entrada WAV | Cumple | Core acepta `.wav` |
-| Entradas MP3/OGG | Cumple | Conservadas |
-| WAV estándar | Cumple | Pipeline estándar Worker |
-| WAV para transcripción | Cumple | Pipeline mono 16 kHz 16-bit |
-| Sufijo `_prepared.wav` | Cumple | Core resuelve nombre |
-| Manifest JSON | Cumple | Core genera y UI descarga |
-| No sobrescribir original | Cumple | Descarga derivada |
-| Worker obligatorio | Cumple | Audio en Worker |
-| Progreso | Cumple | `PROGRESS` |
-| Cancelación | Cumple | `CANCEL` / `CANCELLED` |
-| Privacidad local | Cumple | Sin CDN obligatoria |
-| Mensajes prudentes | Cumple | No promete milagros |
+| Local-first | Cumple | Sin backend ni subida de audio |
+| Privacidad absoluta | Cumple | Sin telemetría, sin CDN obligatoria |
+| Vanilla JS | Cumple | Sin frameworks runtime |
+| Web Worker | Cumple | FFmpeg.wasm en Worker |
+| Fallback local | Cumple | Web Audio API local |
+| Netlify | Cumple | `netlify.toml` con headers críticos |
+| Manifest APU | Cumple | JSON descargable en modo transcripción |
 | Accesibilidad mínima | Cumple | Controles nativos + `aria-live` |
-| Runtime vanilla | Cumple | Sin frameworks |
+| Licencia abierta | Cumple | MIT |
 
-## 6. Smoke test manual obligatorio
-
-1. Ejecutar:
-
-```bash
-python3 -m http.server 8080
-```
-
-2. Abrir:
-
-```text
-http://localhost:8080
-```
-
-3. Probar modo `WAV estándar`:
-- Cargar MP3 pequeño.
-- Convertir.
-- Descargar WAV.
-- Repetir con OGG o WAV si hay muestra.
-
-4. Probar modo `WAV para transcripción`:
-- Cargar MP3/OGG/WAV pequeño.
-- Procesar.
-- Descargar WAV preparado.
-- Descargar manifest JSON.
-- Confirmar que manifest declara `channels: 1`, `sampleRate: 16000`, `bitDepth: 16`.
-
-5. Probar cancelación:
-- Iniciar procesamiento.
-- Pulsar Cancelar.
-- Confirmar que la UI permite intentarlo de nuevo.
-
-6. Verificar red:
-- DevTools → Network.
-- Deben cargarse solo archivos del mismo origen local.
-
-## 7. Riesgos residuales
+## 6. Riesgos residuales
 
 | Riesgo | Nivel | Mitigación |
 |---|---:|---|
-| Safari/iOS puede fallar por memoria | Medio | Límites conservadores |
-| Conversión real no automatizada aquí | Medio | Smoke manual obligatorio |
-| Filtros no ayudan en audio muy degradado | Medio | Lenguaje prudente |
-| Assets locales pesan ~31 MB | Bajo-Medio | Privacidad y uso sin CDN |
-| UI cerca de R10 | Bajo | No ampliar `app.js` sin dividir |
+| Algunos AAC/M4A específicos pueden no ser decodificados por FFmpeg ni por el navegador | Medio | Mensaje claro, conservar original, probar Chrome |
+| Safari/iOS puede tener límites de memoria | Medio | Validación defensiva de memoria |
+| Assets FFmpeg pesan ~31 MB | Bajo-Medio | Caché inmutable en Netlify |
+| Firefox puede diferir en soporte AAC | Bajo-Medio | Fallback depende del navegador |
 
-## 8. Conclusión QA
+## 7. Conclusión QA
 
-APU-01.1 queda listo para prueba manual final y publicación. No hay bugs abiertos detectados por auditoría automatizada.
+APU-01 v0.7.0 queda listo como release profesional: auditable, local-first, MIT, estático, desplegable en Netlify y compatible con el ecosistema APU.

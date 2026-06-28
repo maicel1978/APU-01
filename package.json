@@ -1,7 +1,7 @@
 {
   "name": "audio-wav-clinico",
-  "version": "0.6.0",
-  "description": "APU-01: preparación acústica local MP3/OGG/WAV a WAV estándar o WAV optimizado para transcripción, con Vanilla JS, Web Worker y FFmpeg.wasm local.",
+  "version": "0.7.0",
+  "description": "APU-01: preparación acústica local-first para convertir audios a WAV estándar o WAV optimizado para transcripción, con Vanilla JS, Web Worker, FFmpeg.wasm local y fallback Web Audio API.",
   "type": "module",
   "private": true,
   "scripts": {

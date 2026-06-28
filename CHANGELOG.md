@@ -2,6 +2,30 @@
 
 PRISMA+ v5.2
 
+## [0.7.0] — Versión estable Netlify / MIT
+
+### Añadido
+- Servidor local Node.js multiplataforma `serve.mjs` con headers COOP/COEP.
+- Fallback local con Web Audio API para mejorar compatibilidad con AAC/M4A/MP4/WEBM/FLAC cuando FFmpeg.wasm no pueda decodificar un archivo.
+- Script Windows `SUBIR_A_GITHUB.bat` para flujo de subida asistido.
+- Página `404.html`, `manifest.json`, `robots.txt` y configuración Netlify reforzada.
+- Auditoría final en `docs/FINAL-AUDIT.md`.
+
+### Cambiado
+- GitHub Actions actualizado a `actions/checkout@v5` y `actions/setup-node@v5`.
+- `npm start` usa Node.js en lugar de `python3`, compatible con Windows/macOS/Linux.
+- Pipeline de preparación estabilizado: WAV mono, 16 kHz, PCM 16-bit, sin filtros agresivos.
+- Documentación alineada con despliegue Netlify y licencia MIT.
+
+### Verificado
+- `npm test`: OK.
+- Deploy Netlify: OK.
+- Conversión WAV: OK.
+- Conversión AAC mediante fallback local: OK.
+- Privacidad local-first: OK.
+- Licencia MIT presente en `LICENSE`.
+
+
 ## [0.6.1-docs] — GitHub publishing + APU handoff
 
 ### Añadido

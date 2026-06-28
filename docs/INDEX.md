@@ -47,3 +47,7 @@ Guía de lectura para el repositorio.
 Antes de publicar como software abierto:
 
 - Añadir una licencia explícita (`LICENSE`).
+
+## Release profesional
+
+- `FINAL-AUDIT.md` — Auditoría final de APU-01 v0.7.0.
